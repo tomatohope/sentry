@@ -1,0 +1,34 @@
+
+############################# sentry arch
+
+
+单结点redis做数据缓存
+单结点postgres做数据持久化
+单结点sentry web作为Sentry消息上报的接口服务端
+单结点sentry cron 服务探活
+单结点sentry worker消息存储
+
+Sentry是一个C/S架构，我们需要在自己应用中集成Sentry的SDK才能在应用发生错误是将错误信息发送给Sentry服务端
+
+sentry client ----消息上报------>web-------> redis(消息处理)-------->worker-------->pgsql
+                          |                                                      |
+                          | <---- cron(服务探活)---------------------------------->
+
+
+############################# sentry deploy
+
+##prepare images
+docker pull redis:latest
+docker pull postgres:latest
+docker pull sentry:latest
+
+docker inspect postgres:9.6 # image info
+docker tag postgres:9.6 192.168.1.108:5000/basic/postgres:9.6
+docker push 192.168.1.108:5000/basic/postgres:9.6
+
+docker tag redis:5.0-alpine 192.168.1.108:5000/basic/redis:5.0-alpine
+docker push 192.168.1.108:5000/basic/redis:5.0-alpine
+
+
+
+

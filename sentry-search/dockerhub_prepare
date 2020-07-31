@@ -1,0 +1,43 @@
+1#docker install
+wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -O/etc/yum.repos.d/docker-ce.repo
+yum -y install docker-ce-18.06.1.ce-3.el7
+
+systemctl enable docker
+systemctl start docker
+
+2#images speed
+vi /etc/docker/daemon.json
+
+{
+  "registry-mirrors": ["https://2ahu77nm.mirror.aliyuncs.com"]
+}
+
+systemctl daemon-reload
+systemctl restart docker
+
+3#images pull
+docker pull redis
+docker pull postgres
+docker pull sentry
+docker pull registry
+
+4#dockerhub secret
+yum -y install httpd-tools
+htpasswd -Bbn docker 123456 > htpasswd
+
+5#dockerhub start
+docker run  -d -p 5000:5000 --restart=always --name dockerhub \
+     -v /etc/docker/auth:/auth \
+     -e "REGISTRY_AUTH=htpasswd" \
+     -e  "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+     -e  REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+     registry
+
+6#push images to dockerhub
+docker tag registry [ip/domain]/basic/registry
+#docker login [ip/domain]:5000 -u docker
+docker login [ip/domain] -u docker
+#docker push [ip/domain]/basic/registry
+docker push 192.168.1.108:5000/basic/sentry:8.22-onbuild
+
+

@@ -1,0 +1,42 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: sentry-user-init
+  name: sentry-user-init
+  namespace: sentry
+spec:
+  template:
+    metadata:
+      labels:
+        app: sentry-user-init
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: sentry-user-init
+        image: "192.168.1.108:5000/basic/sentry:8.22-onbuild"
+        command: ["sentry","createuser","--no-input","--email", "xxx@xxx.com", "--superuser","--password","sentryMt2018"]
+        env:
+          - name: SENTRY_SECRET_KEY
+            value: "!_-9g8+6(6i8092ev-s38%q^gcdsm+e_+j1mqu+%qq*i1zd*ol"
+          - name: SENTRY_DB_USER
+            value: "sentry"
+          - name: SENTRY_DB_NAME
+            value: "sentry"
+          - name: SENTRY_DB_PASSWORD
+            value: "ymzndl33SNwdm"
+          - name: SENTRY_POSTGRES_HOST
+            value: sentry-postgresql
+          - name: SENTRY_POSTGRES_PORT
+            value: "5432"
+          - name: SENTRY_REDIS_HOST
+            value: sentry-redis
+          - name: SENTRY_REDIS_PASSWORD
+            value: "L9Ut7625E0dDdgf"
+          - name: SENTRY_REDIS_PORT
+            value: "6379"
+          - name: SENTRY_USER_PASSWORD
+            value: "sentryMt2018"
+      imagePullSecrets:
+        - name: harborsecretname
