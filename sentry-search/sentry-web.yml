@@ -63,10 +63,6 @@ spec:
             value: ""
           - name: GITHUB_API_SECRET
             value: ""
-          - name: SENTRY_RUNNING_UWSGI
-            value: ""
-          - name: REDIS_PORT_6379_TCP_ADDR
-            value: "sentry-redis"
         volumeMounts:
         - name: sentry-data
           mountPath: /var/lib/sentry/files
